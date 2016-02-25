@@ -1817,7 +1817,7 @@ public class VideoModule implements CameraModule,
         Log.v(TAG, "pauseVideoRecording");
         mMediaRecorderPausing = true;
         mRecordingTotalTime += SystemClock.uptimeMillis() - mRecordingStartTime;
-        mMediaRecorder.pause();
+        //mMediaRecorder.pause();
     }
 
     private void resumeVideoRecording() {
