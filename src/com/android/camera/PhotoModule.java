@@ -1616,7 +1616,12 @@ public class PhotoModule
                         new JpegPictureCallback(loc));
             }
         } else {
-            mCameraDevice.enableShutterSound(!mRefocus);
+            if (!isShutterSoundOn()) {
+                mCameraDevice.enableShutterSound(false);
+            } else {
+                mCameraDevice.enableShutterSound(!mRefocus);
+            }
+
             mCameraDevice.takePicture(mHandler,
                     new ShutterCallback(!animateBefore),
                     mRawPictureCallback, mPostViewPictureCallback,
@@ -2148,12 +2153,22 @@ public class PhotoModule
             String zsl = mPreferences.getString(CameraSettings.KEY_ZSL,
                     mActivity.getString(R.string.pref_camera_zsl_default));
             mUI.overrideSettings(CameraSettings.KEY_ZSL, zsl);
-            mUI.startCountDown(seconds, playSound);
+            mUI.startCountDown(seconds, isShutterSoundOn());
         } else {
             mSnapshotOnIdle = false;
             mFocusManager.doSnap();
         }
         mShutterPressing = false;
+    }
+
+    private boolean isShutterSoundOn() {
+        IconListPreference shutterSoundPref = (IconListPreference) mPreferenceGroup
+                .findPreference(CameraSettings.KEY_SHUTTER_SOUND);
+        if (shutterSoundPref != null && shutterSoundPref.getValue() != null &&
+                shutterSoundPref.getValue().equalsIgnoreCase("disable")) {
+            return false;
+        }
+        return true;
     }
 
     @Override
